@@ -10,9 +10,10 @@ import com.ecommerce.ecommerce.model.Produtos;
 @Repository
 public interface ProdutosRepository extends JpaRepository<Produtos, Long>{
 	
-	public List<Produtos> findAllByNomeProdutosContainingIgnoreCase(String nomeProduto);
+	public List<Produtos>findAllByNomeProdutoContainingIgnoreCase(String nomeProduto);
+	
+	public List<Produtos>findAllByCategoriasContainingIgnoreCase(String categorias);
 		
 
 }
-
 
