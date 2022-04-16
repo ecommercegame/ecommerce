@@ -39,6 +39,14 @@ public class Produtos implements Serializable{
 	@NotNull
 	@Column(name="valor_Produto")
 	private double valorProduto;
+	
+	
+	@Column(name="estoque")
+	private int estoque;
+	
+	@NotNull
+	@Column(name="categorias")
+	private String categorias;
 
 
 	public long getIdProduto() {
@@ -84,6 +92,26 @@ public class Produtos implements Serializable{
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
+	
+	public int getEstoque() {
+		return estoque;
+	}
+
+
+	public void setEstoque(int estoque) {
+		this.estoque = estoque;
+	}
+
+
+	public String getCategorias() {
+		return categorias;
+	}
+
+
+	public void setCategorias(String categorias) {
+		this.categorias = categorias;
+	}
+
 	
 	
 
