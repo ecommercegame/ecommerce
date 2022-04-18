@@ -15,47 +15,45 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ecommerce.ecommerce.model.Pedidos;
-import com.ecommerce.ecommerce.repository.PedidosRepository;
+import com.ecommerce.ecommerce.model.Clientes;
+import com.ecommerce.ecommerce.repository.ClientesRepository;
 
 @RestController
-@RequestMapping("/pedidos")
+@RequestMapping("/clientes")
 @CrossOrigin("*")
-public class PedidosController {
-	
+public class ClientesController {
 	@Autowired
-	private PedidosRepository pedidosRepository;
+	private ClientesRepository clientesRepository;
 	
 	@GetMapping
-	public ResponseEntity<List<Pedidos>>GetAll(){
-				return ResponseEntity.ok(pedidosRepository.findAll());
+	public ResponseEntity<List<Clientes>>GetAll(){
+				return ResponseEntity.ok(clientesRepository.findAll());
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<Pedidos> GetById(@PathVariable Long id){
-		return pedidosRepository.findById(id)
+	public ResponseEntity<Clientes> GetById(@PathVariable Long id){
+		return clientesRepository.findById(id)
 				.map(resp -> ResponseEntity.ok(resp))
 				.orElse(ResponseEntity.notFound().build());
 	}
 	
 	@GetMapping("/nome/{nome}")
-	public ResponseEntity<List<Pedidos>>GetByNome(@PathVariable String nome){
-		return ResponseEntity.ok(pedidosRepository.findAllByNomeClienteContainingIgnoreCase(nome));
+	public ResponseEntity<List<Clientes>>GetByNome(@PathVariable String nome){
+		return ResponseEntity.ok(clientesRepository.findAllByNomeUsuarioContainingIgnoreCase(nome));
 	}
 	
 	@PostMapping
-	public ResponseEntity<Pedidos> post (@RequestBody Pedidos pedidos){
-		return ResponseEntity.status(HttpStatus.CREATED).body(pedidosRepository.save(pedidos));
+	public ResponseEntity<Clientes> post (@RequestBody Clientes clientes){
+		return ResponseEntity.status(HttpStatus.CREATED).body(clientesRepository.save(clientes));
 	}
 	
 	@PutMapping
-	public ResponseEntity<Pedidos> put (@RequestBody Pedidos pedidos){
-		return ResponseEntity.status(HttpStatus.OK).body(pedidosRepository.save(pedidos));
+	public ResponseEntity<Clientes> put (@RequestBody Clientes clientes){
+		return ResponseEntity.status(HttpStatus.OK).body(clientesRepository.save(clientes));
 	}
 	
 	@DeleteMapping("/{id}")
 	public void delete(@PathVariable Long id) {
-		pedidosRepository.deleteById(id);
+		clientesRepository.deleteById(id);
 	}
-
 }

@@ -1,5 +1,6 @@
 package com.ecommerce.ecommerce.model;
 
+import java.util.List;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -7,21 +8,24 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 @Table(name= "pedidos")
 public class Pedidos {
-
+	
 	public Pedidos() {
 		super();
 	}
-	
-	
-	private static final Long serialVersionUID =1L;
-	
+		
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id_pedido")
@@ -44,12 +48,27 @@ public class Pedidos {
 	private int confirmacaoPagamento;
 	
 	@NotNull
-	@Column(name= "chave_acesso")	
-	private String chaveAcesso;
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name= "chave_acesso", unique = true)	
+	private UUID chaveAcesso ;
 	
 	@NotNull
 	@Column(name= "confirmacao_envio")
 	private int confirmacaoEnvio;
+	
+	@NotNull
+	@ManyToOne
+	@JoinColumn(name= "clientes_id")
+	@JsonManagedReference
+	private Clientes clientes;
+	
+	@ManyToMany
+	@JoinTable(name= "pedidos_produtos",
+	joinColumns = @JoinColumn(name = "pedido_id"),
+	inverseJoinColumns= @JoinColumn(name = "produto_id")) //tabela intermediária para guardar quais produtos fazem parte dos pedidos
+	@JsonManagedReference
+	private List<Produtos> produtos;
+	
 
 	public Long getIdPedido() {
 		return idPedido;
@@ -91,11 +110,12 @@ public class Pedidos {
 		this.confirmacaoPagamento = confirmacaoPagamento;
 	}
 
-	public String getChaveAcesso() {
-		return chaveAcesso;
+	@SuppressWarnings("static-access") //gerar chave de acesso aleatória
+	public UUID getChaveAcesso() {
+		return chaveAcesso.randomUUID();
 	}
 
-	public void setChaveAcesso(String chaveAcesso) {
+	public void setChaveAcesso(UUID chaveAcesso) {
 		this.chaveAcesso = chaveAcesso;
 	}
 
@@ -107,10 +127,21 @@ public class Pedidos {
 		this.confirmacaoEnvio = confirmacaoEnvio;
 	}
 
-	public static Long getSerialversionuid() {
-		return serialVersionUID;
+	public Clientes getClientes() {
+		return clientes;
+	}
+
+	public void setClientes(Clientes clientes) {
+		this.clientes = clientes;
+	}
+
+	public List<Produtos> getProdutos() {
+		return produtos;
+	}
+
+	public void setProdutos(List<Produtos> produtos) {
+		this.produtos = produtos;
 	}
 	
-	
-	
+		
 }
