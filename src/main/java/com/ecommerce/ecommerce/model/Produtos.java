@@ -1,25 +1,28 @@
 package com.ecommerce.ecommerce.model;
 
-import java.io.Serializable;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name="produtos")
-public class Produtos implements Serializable{
+public class Produtos {
 	
 	public Produtos () {
 		super ();
 	}
 	
-	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="id_Produto")
@@ -47,6 +50,10 @@ public class Produtos implements Serializable{
 	@NotNull
 	@Column(name="categorias")
 	private String categorias;
+	
+	@ManyToMany(mappedBy = "produtos", cascade = CascadeType.REMOVE)
+	@JsonBackReference
+	private List<Pedidos> pedidos;
 
 
 	public long getIdProduto() {
@@ -88,11 +95,6 @@ public class Produtos implements Serializable{
 		this.valorProduto = valorProduto;
 	}
 
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-	
 	public int getEstoque() {
 		return estoque;
 	}
@@ -112,7 +114,15 @@ public class Produtos implements Serializable{
 		this.categorias = categorias;
 	}
 
-	
-	
 
+	public List<Pedidos> getPedidos() {
+		return pedidos;
+	}
+
+
+	public void setPedidos(List<Pedidos> pedidos) {
+		this.pedidos = pedidos;
+	}
+
+	
 }
