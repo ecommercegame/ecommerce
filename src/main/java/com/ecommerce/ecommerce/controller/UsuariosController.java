@@ -15,45 +15,45 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ecommerce.ecommerce.model.Clientes;
-import com.ecommerce.ecommerce.repository.ClientesRepository;
+import com.ecommerce.ecommerce.model.Usuarios;
+import com.ecommerce.ecommerce.repository.UsuariosRepository;
 
 @RestController
-@RequestMapping("/clientes")
+@RequestMapping("/usuarios")
 @CrossOrigin("*")
-public class ClientesController {
+public class UsuariosController {
 	@Autowired
-	private ClientesRepository clientesRepository;
+	private UsuariosRepository usuariosRepository;
 	
 	@GetMapping
-	public ResponseEntity<List<Clientes>>GetAll(){
-				return ResponseEntity.ok(clientesRepository.findAll());
+	public ResponseEntity<List<Usuarios>>GetAll(){
+				return ResponseEntity.ok(usuariosRepository.findAll());
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<Clientes> GetById(@PathVariable Long id){
-		return clientesRepository.findById(id)
+	public ResponseEntity<Usuarios> GetById(@PathVariable Long id){
+		return usuariosRepository.findById(id)
 				.map(resp -> ResponseEntity.ok(resp))
 				.orElse(ResponseEntity.notFound().build());
 	}
 	
 	@GetMapping("/nome/{nome}")
-	public ResponseEntity<List<Clientes>>GetByNome(@PathVariable String nome){
-		return ResponseEntity.ok(clientesRepository.findAllByNomeUsuarioContainingIgnoreCase(nome));
+	public ResponseEntity<List<Usuarios>>GetByNome(@PathVariable String nome){
+		return ResponseEntity.ok(usuariosRepository.findAllByNomeUsuarioContainingIgnoreCase(nome));
 	}
 	
 	@PostMapping
-	public ResponseEntity<Clientes> post (@RequestBody Clientes clientes){
-		return ResponseEntity.status(HttpStatus.CREATED).body(clientesRepository.save(clientes));
+	public ResponseEntity<Usuarios> post (@RequestBody Usuarios clientes){
+		return ResponseEntity.status(HttpStatus.CREATED).body(usuariosRepository.save(clientes));
 	}
 	
 	@PutMapping
-	public ResponseEntity<Clientes> put (@RequestBody Clientes clientes){
-		return ResponseEntity.status(HttpStatus.OK).body(clientesRepository.save(clientes));
+	public ResponseEntity<Usuarios> put (@RequestBody Usuarios clientes){
+		return ResponseEntity.status(HttpStatus.OK).body(usuariosRepository.save(clientes));
 	}
 	
 	@DeleteMapping("/{id}")
 	public void delete(@PathVariable Long id) {
-		clientesRepository.deleteById(id);
+		usuariosRepository.deleteById(id);
 	}
 }
