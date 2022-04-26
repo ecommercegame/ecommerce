@@ -14,7 +14,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -31,11 +30,8 @@ public class Pedidos {
 	@Column(name = "id_pedido")
 	private Long idPedido;
 	
-	@NotNull
-	@Size(min = 3, max=255)
-	@Column(name = "nome_cliente")
-	private String nomeCliente;
-	
+	// Removi o nome do cliente, pois já que as tabelas fazem ligação não tem necessidade
+		
 	@Column(name = "qnt_produto")
 	private int qntProdutos;
 	
@@ -58,9 +54,9 @@ public class Pedidos {
 	
 	@NotNull
 	@ManyToOne
-	@JoinColumn(name= "clientes_id")
+	@JoinColumn(name= "usuarios_id")
 	@JsonManagedReference
-	private Clientes clientes;
+	private Usuarios usuarios;
 	
 	@ManyToMany
 	@JoinTable(name= "pedidos_produtos",
@@ -76,14 +72,6 @@ public class Pedidos {
 
 	public void setIdPedido(Long idPedido) {
 		this.idPedido = idPedido;
-	}
-
-	public String getNomeCliente() {
-		return nomeCliente;
-	}
-
-	public void setNomeCliente(String nomeCliente) {
-		this.nomeCliente = nomeCliente;
 	}
 
 	public int getQntProdutos() {
@@ -127,12 +115,12 @@ public class Pedidos {
 		this.confirmacaoEnvio = confirmacaoEnvio;
 	}
 
-	public Clientes getClientes() {
-		return clientes;
+	public Usuarios getUsuarios() {
+		return usuarios;
 	}
 
-	public void setClientes(Clientes clientes) {
-		this.clientes = clientes;
+	public void setClientes(Usuarios usuarios) {
+		this.usuarios = usuarios;
 	}
 
 	public List<Produtos> getProdutos() {
