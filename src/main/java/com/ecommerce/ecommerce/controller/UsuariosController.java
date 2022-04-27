@@ -1,6 +1,7 @@
 package com.ecommerce.ecommerce.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -38,7 +39,7 @@ public class UsuariosController {
 	}
 	
 	@GetMapping("/nome/{nome}")
-	public ResponseEntity<List<Usuarios>>GetByNome(@PathVariable String nome){
+	public ResponseEntity<Optional<Usuarios>>GetByNome(@PathVariable String nome){
 		return ResponseEntity.ok(usuariosRepository.findByUsuario(nome));
 	}
 	
