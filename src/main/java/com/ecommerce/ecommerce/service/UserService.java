@@ -37,16 +37,16 @@ public class UserService {
 				
 				String auth = usuario.get().getUsuario() + ":" + usuario.get().getSenha();
 				byte[] encodeAuth = Base64.encodeBase64(auth.getBytes(Charset.forName("US-ASCII")));
-				String authHeader = "Basic"+ new String();
+				String authHeader = "Basic"+ new String(encodeAuth);
 
 				usuario.get().setToken(authHeader);
 				usuario.get().setNome(user.get().getNome());
-				
+				return usuario;
 			}
 		}
 		
 		
-		return usuario;
+		return null;
 	}
 
 }
