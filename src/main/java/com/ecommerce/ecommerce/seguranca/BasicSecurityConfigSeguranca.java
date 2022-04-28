@@ -33,13 +33,27 @@ public class BasicSecurityConfigSeguranca extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		
 		http.authorizeRequests()
-		.antMatchers("/usuarios/login").permitAll()
-		.antMatchers("/usuarios/cadastrar").permitAll()
-		.anyRequest().authenticated()
-		.and().httpBasic()
-		.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-		.and().cors()
-		.and().csrf().disable();
+				.antMatchers("/usuarios/login").permitAll()
+				.antMatchers("/usuarios/cadastrar").permitAll()
+				.anyRequest()
+				.authenticated()
+			.and()
+				.httpBasic()
+			.and()
+				.sessionManagement()
+				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+			.and()
+				.cors()
+			.and()
+				.csrf()
+				.disable()
+				.formLogin()
+					.loginPage("/usuarios/login")
+					.permitAll()
+			.and()
+				.logout()
+					.logoutSuccessUrl("/usuarios/login?logout")
+					.permitAll();
 		
 	}
 }
