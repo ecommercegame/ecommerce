@@ -1,60 +1,39 @@
 package com.ecommerce.ecommerce.controller;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ecommerce.ecommerce.model.UsuarioLogin;
 import com.ecommerce.ecommerce.model.Usuarios;
-import com.ecommerce.ecommerce.repository.UsuariosRepository;
+import com.ecommerce.ecommerce.service.UserService;
 
 @RestController
 @RequestMapping("/usuarios")
 @CrossOrigin("*")
 public class UsuariosController {
+	
 	@Autowired
-	private UsuariosRepository usuariosRepository;
+	private UserService userService;
 	
-	@GetMapping
-	public ResponseEntity<List<Usuarios>>GetAll(){
-				return ResponseEntity.ok(usuariosRepository.findAll());
+	@PostMapping("/logar")
+	public ResponseEntity<UsuarioLogin> Autentication(@RequestBody Optional<UsuarioLogin> user)
+	{
+		return userService.login(user).map(resp -> ResponseEntity.ok(resp))
+				.orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
 	}
 	
-	@GetMapping("/{id}")
-	public ResponseEntity<Usuarios> GetById(@PathVariable Long id){
-		return usuariosRepository.findById(id)
-				.map(resp -> ResponseEntity.ok(resp))
-				.orElse(ResponseEntity.notFound().build());
+	@PostMapping("/cadastrar")
+	public ResponseEntity<Usuarios> Post(@RequestBody Usuarios usuario)
+	{
+		return ResponseEntity.status(HttpStatus.CREATED).body(userService.cadastroUsuario(usuario));
 	}
 	
-	@GetMapping("/nome/{nome}")
-	public ResponseEntity<Optional<Usuarios>>GetByNome(@PathVariable String nome){
-		return ResponseEntity.ok(usuariosRepository.findByUsuario(nome));
-	}
-	
-	@PostMapping
-	public ResponseEntity<Usuarios> post (@RequestBody Usuarios clientes){
-		return ResponseEntity.status(HttpStatus.CREATED).body(usuariosRepository.save(clientes));
-	}
-	
-	@PutMapping
-	public ResponseEntity<Usuarios> put (@RequestBody Usuarios clientes){
-		return ResponseEntity.status(HttpStatus.OK).body(usuariosRepository.save(clientes));
-	}
-	
-	@DeleteMapping("/{id}")
-	public void delete(@PathVariable Long id) {
-		usuariosRepository.deleteById(id);
-	}
 }
