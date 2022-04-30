@@ -38,9 +38,9 @@ public class PedidosController {
 				.orElse(ResponseEntity.notFound().build());
 	}
 	
-	@GetMapping("/nome/{nome}")
-	public ResponseEntity<List<Pedidos>>GetByNome(@PathVariable String nome){
-		return ResponseEntity.ok(pedidosRepository.findAllByNomeClienteContainingIgnoreCase(nome));
+	@GetMapping("/confirmacaoEnvio/{envio}")
+	public ResponseEntity<List<Pedidos>>GetByNome(@PathVariable int envio){
+		return ResponseEntity.ok(pedidosRepository.findAllByConfirmacaoEnvio(envio));
 	}
 	
 	@PostMapping
