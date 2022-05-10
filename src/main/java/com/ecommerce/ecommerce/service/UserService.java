@@ -5,8 +5,10 @@ import java.nio.charset.Charset;
 
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.ecommerce.ecommerce.model.UsuarioLogin;
 import com.ecommerce.ecommerce.model.Usuarios;
@@ -19,34 +21,78 @@ public class UserService {
 	public UsuariosRepository usuarioRepository;
 	
 	
-	public Usuarios cadastroUsuario(Usuarios usuario) {
-		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-		String passEncoder = encoder.encode(usuario.getSenha());
-		usuario.setSenha(passEncoder);
-		
-		return usuarioRepository.save(usuario);
+	public Optional<Usuarios> cadastroUsuario(Usuarios usuario) {
+		if (usuarioRepository.findByUsuario(usuario.getUsuario()).isPresent())
+			return Optional.empty();
+		usuario.setSenha(criptografarSenha(usuario.getSenha()));
+		return Optional.of(usuarioRepository.save(usuario));	
 	}
 	
+
+	public Optional<Usuarios> atualizarUsuario(Usuarios usuario) {
+		
+		if(usuarioRepository.findById(usuario.getIdUsuario()).isPresent()) {			
+			
+			Optional<Usuarios> buscarUsuario = usuarioRepository.findByUsuario(usuario.getUsuario());
+			
+			if ( (buscarUsuario.isPresent()) && ( buscarUsuario.get().getIdUsuario() != usuario.getIdUsuario()))
+				throw new ResponseStatusException(
+						HttpStatus.BAD_REQUEST, "Usuário já existe!", null);
+			usuario.setSenha(criptografarSenha(usuario.getSenha()));			
+			return Optional.ofNullable(usuarioRepository.save(usuario));			
+		}				
+		return Optional.empty();
 	
-	public Optional<UsuarioLogin> login(Optional<UsuarioLogin> usuario) {
-		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-		Optional<Usuarios> user = usuarioRepository.findByUsuario(usuario.get().getUsuario());
+	}
 	
-		if(usuario.isPresent()) {
-			if(encoder.matches(usuario.get().getSenha(), user.get().getSenha())) {
+	public Optional<UsuarioLogin> Login(Optional<UsuarioLogin> usuarioLogin) {		
+		Optional<Usuarios> usuario = usuarioRepository.findByUsuario(usuarioLogin.get().getUsuario());
+
+		if (usuario.isPresent()) {			
+			if (compararSenhas(usuarioLogin.get().getSenha(), usuario.get().getSenha())) {
 				
-				String auth = usuario.get().getUsuario() + ":" + usuario.get().getSenha();
-				byte[] encodeAuth = Base64.encodeBase64(auth.getBytes(Charset.forName("US-ASCII")));
-				String authHeader = "Basic"+ new String(encodeAuth);
+				usuarioLogin.get().setIdUsuario(usuario.get().getIdUsuario());
+				usuarioLogin.get().setNome(usuario.get().getNome());
+				usuarioLogin.get().setCpfUsuario(usuario.get().getCpfUsuario());	
+				usuarioLogin.get().setToken(gerarBasicToken(usuarioLogin.get().getUsuario(), usuarioLogin.get().getSenha()));
+				usuarioLogin.get().setSenha(usuario.get().getSenha());
 
-				usuario.get().setToken(authHeader);
-				usuario.get().setNome(user.get().getNome());
-				return usuario;
+				return usuarioLogin;
+
 			}
-		}
+		}			
+		return Optional.empty();
 		
-		
-		return null;
+	}
+	
+	/*Criptografar senha
+	 Instancia um objeto da Classe BCryptPasswordEncoder para criptografar a senha do usuário.*/
+	private String criptografarSenha(String senha) {
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();		
+		return encoder.encode(senha);
 	}
 
+	
+	/*Comparar senha Checa se a senha enviada, depois de criptografada, é igual a senha
+	gravada no Banco de Dados.*/
+	private boolean compararSenhas(String senhaDigitada, String senhaBanco) {		
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();		
+		return encoder.matches(senhaDigitada, senhaBanco);
+	}
+	
+	
+	/*Método Gerar Basic Token	
+	* A primeira linha, monta uma String (token) seguindo o padrão Basic, através 
+	* da concatenação de caracteres que será codificada (Não criptografada) no formato 
+	* Base64, através da Dependência Apache Commons Codec.
+	* Essa String tem o formato padrão: <username>:<password> que não pode ser
+	* alterado */
+	private String gerarBasicToken(String usuario, String senha) {
+
+		String token = usuario + ":" + senha;
+		byte[] tokenBase64 = Base64.encodeBase64(token.getBytes(Charset.forName("US-ASCII")));
+		return "Basic " + new String(tokenBase64);
+
+	}
+	
 }
