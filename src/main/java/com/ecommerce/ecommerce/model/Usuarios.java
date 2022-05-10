@@ -23,6 +23,19 @@ public class Usuarios {
 		super();
 	}
 
+	
+	public Usuarios(Long idUsuario, String nome,
+			 String usuario,  String cpfUsuario,
+			 String senha, List<Pedidos> pedidos) {
+		this.idUsuario = idUsuario;
+		this.nome = nome;
+		this.usuario = usuario;
+		this.cpfUsuario = cpfUsuario;
+		this.senha = senha;
+		this.pedidos = pedidos;
+	}
+
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id_Usuario")
