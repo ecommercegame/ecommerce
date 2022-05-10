@@ -1,5 +1,6 @@
 package com.ecommerce.ecommerce.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,4 +12,6 @@ import com.ecommerce.ecommerce.model.Usuarios;
 public interface UsuariosRepository extends JpaRepository<Usuarios,Long> {
 
 	public Optional<Usuarios>findByUsuario(String usuario);
+	
+	public List<Usuarios> findAllByNomeContainingIgnoreCase(String Nome);
 }
