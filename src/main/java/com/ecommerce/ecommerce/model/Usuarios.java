@@ -57,7 +57,7 @@ public class Usuarios {
 
 	@Size(min = 4, max = 20)
 	@Column(name = "senha")
-	@JsonIgnore // não mostrar a senha/ deixar a coluna oculta
+	@NotNull(message = "A senha deve conter entre 4 a 20 caracteres")
 	private String senha;
 
 	@OneToMany(mappedBy = "usuarios")
