@@ -9,11 +9,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 @Entity
 @Table(name = "usuarios")
@@ -46,8 +49,9 @@ public class Usuarios {
 	@Column(name = "nome")
 	private String nome;
 	
-	@NotNull
-	@Size(min= 2, max = 100)
+	@Schema(example="example@email.com.br")
+	@NotNull(message="O atributo usuário é obrigatório")
+	@Email(message="O atributo usuário deve ser um email válido")
 	private String usuario; // email do usuario, remover emaiUsuario
 
 	@NotNull
