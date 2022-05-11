@@ -1,0 +1,105 @@
+package com.ecommerce.ecommerce.controller;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.Optional;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import com.ecommerce.ecommerce.model.Usuarios;
+import com.ecommerce.ecommerce.repository.UsuariosRepository;
+import com.ecommerce.ecommerce.service.UserService;
+
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class UsuariosControllerTest {
+	
+	@Autowired
+	private TestRestTemplate testRestTemplate;
+	
+	@Autowired
+	private UserService userService;
+	
+	@Autowired
+	private UsuariosRepository usuariosRepository;
+	
+	@BeforeAll()
+	void start() {
+		usuariosRepository.deleteAll();
+	}
+	
+	@Test
+	@Order(1)
+	@DisplayName("Cadastrar um usuário")
+	public void deveCriarUmUsuario() {
+		HttpEntity<Usuarios> requisicao = new HttpEntity<Usuarios>(new Usuarios
+				(0L, "Maria","maria@ecommerce.com","12312312312","12345",null));
+		ResponseEntity<Usuarios> resposta = testRestTemplate
+				.exchange("/usuarios/cadastrar", HttpMethod.POST,requisicao,Usuarios.class);
+		assertEquals(HttpStatus.CREATED,resposta.getStatusCode());
+		assertEquals(requisicao.getBody().getNome(),resposta.getBody().getNome());
+		assertEquals(requisicao.getBody().getUsuario(),resposta.getBody().getUsuario());
+		assertEquals(requisicao.getBody().getCpfUsuario(),resposta.getBody().getCpfUsuario());
+	}
+	
+	@Test
+	@Order(2)
+	@DisplayName("Não deve permitir duplicação de usuário")
+	public void naoDeveDuplicarUsuario() {
+		userService.cadastroUsuario(new Usuarios
+				(0L,"Joao","joao@ecommerce.com","45645645645","09876",null));
+		HttpEntity<Usuarios> requisicao = new HttpEntity<Usuarios>(new Usuarios
+				(0L,"Joao","joao@ecommerce.com","45645645645","09876",null));
+		ResponseEntity<Usuarios> resposta = testRestTemplate
+				.exchange("/usuarios/cadastrar", HttpMethod.POST,requisicao,Usuarios.class);
+		assertEquals(HttpStatus.BAD_REQUEST,resposta.getStatusCode());
+	}
+	
+	@Test
+	@Order(3)
+	@DisplayName("Alterar um usuário")
+	public void deveAlterarUmUsuario() {
+		Optional<Usuarios> usuarioCriado = userService.cadastroUsuario(new Usuarios
+				(0L,"Pedro","pedro@ecommerce.com","89089089078","76543",null));
+		Usuarios usuarioAtualizar = new Usuarios (usuarioCriado.get().getIdUsuario(),
+				"Pedro Joao","pedro@ecommerce.com","89089089078","76543",null);
+		HttpEntity<Usuarios> requisicao = new HttpEntity<Usuarios>(usuarioAtualizar);
+		ResponseEntity<Usuarios> resposta = testRestTemplate
+				.withBasicAuth("root", "root")
+				.exchange("/usuarios/cadastrar", HttpMethod.PUT,requisicao,Usuarios.class);
+		assertEquals(HttpStatus.OK,resposta.getStatusCode());
+		assertEquals(usuarioAtualizar.getNome(),resposta.getBody().getNome());
+		assertEquals(usuarioAtualizar.getUsuario(),resposta.getBody().getUsuario());
+		assertEquals(usuarioAtualizar.getCpfUsuario(),resposta.getBody().getCpfUsuario());
+	}
+	
+	@Test
+	@Order(4)
+	@DisplayName("Listar todos os usuários")
+	public void deveMostrarTodosUsuarios() {
+		userService.cadastroUsuario(new Usuarios
+				(0L,"Joana", "joana@ecommerce.com","5675675645","56789",null));
+		userService.cadastroUsuario(new Usuarios
+				(0L,"Carlos", "carlos@ecommerce.com","87687687667","00090",null));
+		ResponseEntity<String> resposta = testRestTemplate
+				.withBasicAuth("root", "root")
+				.exchange("/usuarios/all", HttpMethod.GET,null,String.class);
+		assertEquals(HttpStatus.OK,resposta.getStatusCode());
+	}
+	
+}
