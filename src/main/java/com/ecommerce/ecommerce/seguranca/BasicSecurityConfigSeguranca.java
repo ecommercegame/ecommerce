@@ -45,8 +45,7 @@ public class BasicSecurityConfigSeguranca extends WebSecurityConfigurerAdapter {
 		.and().httpBasic()
 		.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 		.and().cors()
-		.and().csrf().disable().formLogin().loginPage("/usuarios/login").permitAll()
-		.and().logout().logoutSuccessUrl("/usuarios/login?logout").permitAll();
+		.and().csrf().disable(); 
 		
 	}
 	
