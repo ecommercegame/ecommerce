@@ -29,9 +29,7 @@ public class Pedidos {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id_pedido")
 	private Long idPedido;
-	
-	// Removi o nome do cliente, pois já que as tabelas fazem ligação não tem necessidade
-		
+			
 	@Column(name = "qnt_produto")
 	private int qntProdutos;
 	
@@ -52,7 +50,7 @@ public class Pedidos {
 	@Column(name= "confirmacao_envio")
 	private int confirmacaoEnvio;
 	
-	@NotNull
+	
 	@ManyToOne
 	@JoinColumn(name= "usuarios_id")
 	@JsonManagedReference

@@ -2,8 +2,10 @@ package com.ecommerce.ecommerce.model;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -13,7 +15,6 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -22,6 +23,34 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Table(name = "usuarios")
 public class Usuarios {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id_Usuario")
+	private Long idUsuario;
+
+	@NotNull
+	@Size(min = 1, max = 255)	
+	private String nome;
+	
+	@Schema(example = "email@email.com.br")
+	@NotNull(message = "O atributo usuário é obrigatório")
+	@Email(message = "O atributo usuário deve ser um e-mail válido")
+	@Column(unique = true)
+	private String usuario; 
+
+	@NotNull
+	@Size(min = 11, max = 11)
+	@Column(unique = true)
+	private String cpfUsuario;	
+
+	@NotNull
+	@Size(min=8)
+	private String senha;
+
+	@OneToMany(mappedBy = "usuarios", fetch = FetchType.LAZY, cascade = CascadeType.ALL)//@JsonManagedReference
+	@JsonIgnore
+	private List<Pedidos> pedidos;
+	
 	public Usuarios() {
 		super();
 	}
@@ -37,36 +66,6 @@ public class Usuarios {
 		this.senha = senha;
 		this.pedidos = pedidos;
 	}
-
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id_Usuario")
-	private Long idUsuario;
-
-	@NotNull
-	@Size(min = 1, max = 255)
-	@Column(name = "nome")
-	private String nome;
-	
-	@Schema(example="example@email.com.br")
-	@NotNull(message="O atributo usuário é obrigatório")
-	@Email(message="O atributo usuário deve ser um email válido")
-	private String usuario; // email do usuario, remover emaiUsuario
-
-	@NotNull
-	@Size(min = 11, max = 11)
-	@Column(name = "cpf_usuario")
-	private String cpfUsuario;	
-
-	@Size(min = 4, max = 20)
-	@Column(name = "senha")
-	@NotNull(message = "A senha deve conter entre 4 a 20 caracteres")
-	private String senha;
-
-	@OneToMany(mappedBy = "usuarios")
-	@JsonBackReference
-	private List<Pedidos> pedidos;
 
 	public Long getIdUsuario() {
 		return idUsuario;

@@ -12,15 +12,16 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ecommerce.ecommerce.model.UsuarioLogin;
 import com.ecommerce.ecommerce.model.Usuarios;
 import com.ecommerce.ecommerce.repository.UsuariosRepository;
 import com.ecommerce.ecommerce.service.UserService;
+
 
 @RestController
 @RequestMapping("/usuarios")
@@ -34,11 +35,12 @@ public class UsuariosController {
 	private UserService userService;
 	
 	@GetMapping("/all")
-	public ResponseEntity <List<Usuarios>> getAll(){		
+	public ResponseEntity <List<Usuarios>> getAll(){
+		
 		return ResponseEntity.ok(usuariosRepository.findAll());
 		
 	}
-	
+
 	@GetMapping("/{id}")
 	public ResponseEntity<Usuarios> getById(@PathVariable Long id) {
 		return usuariosRepository.findById(id)
@@ -54,16 +56,19 @@ public class UsuariosController {
 	}
 	
 	@PostMapping("/cadastrar")
-	public ResponseEntity<Optional<Usuarios>> Post(@Valid @RequestBody Usuarios usuario){
-		return ResponseEntity.status(HttpStatus.CREATED).body(userService.cadastroUsuario(usuario));
+	public ResponseEntity<Usuarios> postUsuario(@Valid @RequestBody Usuarios usuarios){
+		
+		return userService.cadastroUsuario(usuarios)
+			.map(resposta -> ResponseEntity.status(HttpStatus.CREATED).body(resposta))
+			.orElse(ResponseEntity.status(HttpStatus.BAD_REQUEST).build());
 	}
 	
-	@PutMapping("/atualizar")
+	
+	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<Usuarios> putUsuario(@Valid @RequestBody Usuarios usuario) {
 		return userService.atualizarUsuario(usuario)
 			.map(resposta -> ResponseEntity.status(HttpStatus.OK).body(resposta))
 			.orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
 	}
-	
 	
 }
