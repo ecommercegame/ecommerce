@@ -1,7 +1,7 @@
 package com.ecommerce.ecommerce.service;
 
-import java.util.Optional;
 import java.nio.charset.Charset;
+import java.util.Optional;
 
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +19,11 @@ public class UserService {
 	
 	@Autowired
 	public UsuariosRepository usuarioRepository;
-	
-	
+		
 	public Optional<Usuarios> cadastroUsuario(Usuarios usuario) {
+
 		if (usuarioRepository.findByUsuario(usuario.getUsuario()).isPresent())
-			return Optional.empty();
+			return Optional.empty();		
 		usuario.setSenha(criptografarSenha(usuario.getSenha()));
 		return Optional.of(usuarioRepository.save(usuario));	
 	}
@@ -33,48 +33,52 @@ public class UserService {
 		
 		if(usuarioRepository.findById(usuario.getIdUsuario()).isPresent()) {			
 			
-			Optional<Usuarios> buscarUsuario = usuarioRepository.findByUsuario(usuario.getUsuario());
+			Optional<Usuarios> buscaUsuario = usuarioRepository.findByUsuario(usuario.getUsuario());			
 			
-			if ( (buscarUsuario.isPresent()) && ( buscarUsuario.get().getIdUsuario() != usuario.getIdUsuario()))
+			if ( (buscaUsuario.isPresent()) && ( buscaUsuario.get().getIdUsuario() != usuario.getIdUsuario()))
 				throw new ResponseStatusException(
 						HttpStatus.BAD_REQUEST, "Usuário já existe!", null);
 			usuario.setSenha(criptografarSenha(usuario.getSenha()));			
-			return Optional.ofNullable(usuarioRepository.save(usuario));			
-		}				
+			return Optional.ofNullable(usuarioRepository.save(usuario));
+			
+		}
+	
 		return Optional.empty();
 	
-	}
+	}	
 	
-	public Optional<UsuarioLogin> Login(Optional<UsuarioLogin> usuarioLogin) {		
+	
+	public Optional<UsuarioLogin> Login(Optional<UsuarioLogin> usuarioLogin) {
+		
 		Optional<Usuarios> usuario = usuarioRepository.findByUsuario(usuarioLogin.get().getUsuario());
-
-		if (usuario.isPresent()) {			
+		
+		if (usuario.isPresent()) {
+			
 			if (compararSenhas(usuarioLogin.get().getSenha(), usuario.get().getSenha())) {
 				
 				usuarioLogin.get().setIdUsuario(usuario.get().getIdUsuario());
 				usuarioLogin.get().setNome(usuario.get().getNome());
-				usuarioLogin.get().setCpfUsuario(usuario.get().getCpfUsuario());	
+				usuarioLogin.get().setCpfUsuario(usuario.get().getCpfUsuario());
 				usuarioLogin.get().setToken(gerarBasicToken(usuarioLogin.get().getUsuario(), usuarioLogin.get().getSenha()));
 				usuarioLogin.get().setSenha(usuario.get().getSenha());
 
 				return usuarioLogin;
 
 			}
-		}			
+		}	
+		
 		return Optional.empty();
 		
 	}
 	
-	/*Criptografar senha
-	 Instancia um objeto da Classe BCryptPasswordEncoder para criptografar a senha do usuário.*/
+	
 	private String criptografarSenha(String senha) {
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();		
 		return encoder.encode(senha);
+
 	}
 
 	
-	/*Comparar senha Checa se a senha enviada, depois de criptografada, é igual a senha
-	gravada no Banco de Dados.*/
 	private boolean compararSenhas(String senhaDigitada, String senhaBanco) {		
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();		
 		return encoder.matches(senhaDigitada, senhaBanco);
@@ -88,11 +92,9 @@ public class UserService {
 	* Essa String tem o formato padrão: <username>:<password> que não pode ser
 	* alterado */
 	private String gerarBasicToken(String usuario, String senha) {
-
 		String token = usuario + ":" + senha;
 		byte[] tokenBase64 = Base64.encodeBase64(token.getBytes(Charset.forName("US-ASCII")));
 		return "Basic " + new String(tokenBase64);
-
 	}
 	
 }
