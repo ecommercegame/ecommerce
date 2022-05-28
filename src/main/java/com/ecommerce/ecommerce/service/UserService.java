@@ -97,4 +97,8 @@ public class UserService {
 		return "Basic " + new String(tokenBase64);
 	}
 	
+	public void excluir(Long id) {
+		usuarioRepository.deleteById(id);
+	}
+	
 }
