@@ -12,7 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -28,22 +28,22 @@ public class Usuarios {
 	@Column(name = "id_Usuario")
 	private Long idUsuario;
 
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 255)	
 	private String nome;
 	
 	@Schema(example = "email@email.com.br")
-	@NotNull(message = "O atributo usuário é obrigatório")
+	@NotBlank(message = "O atributo usuário é obrigatório")
 	@Email(message = "O atributo usuário deve ser um e-mail válido")
 	@Column(unique = true)
 	private String usuario; 
 
-	@NotNull
+	@NotBlank
 	@Size(min = 11, max = 11)
 	@Column(unique = true)
 	private String cpfUsuario;	
 
-	@NotNull
+	@NotBlank
 	@Size(min=8)
 	private String senha;
 
