@@ -8,7 +8,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -51,8 +53,11 @@ public class Produtos {
 	@Column(name="categorias")
 	private String categorias;
 	
-	@ManyToMany(mappedBy = "produtos", cascade = CascadeType.REMOVE)
-	@JsonBackReference
+	@NotNull
+	private String imagem;
+	
+	@ManyToOne
+	@JoinColumn(name = "id_pedidos")
 	private List<Pedidos> pedidos;
 
 
@@ -123,6 +128,18 @@ public class Produtos {
 	public void setPedidos(List<Pedidos> pedidos) {
 		this.pedidos = pedidos;
 	}
+
+
+	public String getImagem() {
+		return imagem;
+	}
+
+
+	public void setImagem(String imagem) {
+		this.imagem = imagem;
+	}
+	
+	
 
 	
 }
