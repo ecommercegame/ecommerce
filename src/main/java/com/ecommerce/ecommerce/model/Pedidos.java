@@ -1,7 +1,6 @@
 package com.ecommerce.ecommerce.model;
 
 import java.util.List;
-import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -11,15 +10,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name= "pedidos")
@@ -45,8 +41,7 @@ public class Pedidos {
 	@JoinColumn(name= "usuarios_id")
 	private Usuarios usuarios;
 	
-	@OneToMany (mappedBy = "pedidos", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinTable(name= "id_produtos")
+	@OneToMany (mappedBy = "pedidos", fetch = FetchType.LAZY, cascade = CascadeType.ALL)	
 	@JsonIgnore
 	private List<Produtos> produtos;
 

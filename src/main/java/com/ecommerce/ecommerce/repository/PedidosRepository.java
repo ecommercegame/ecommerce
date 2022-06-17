@@ -11,6 +11,6 @@ import com.ecommerce.ecommerce.model.Pedidos;
 @Repository
 public interface PedidosRepository extends JpaRepository<Pedidos, Long> {
 	
-	public List<Pedidos>findAllByConfirmacaoEnvio(int confirmacaoPagamento);
+	public List<Pedidos>findAllByIdPedido(int idProduto);
 
 }

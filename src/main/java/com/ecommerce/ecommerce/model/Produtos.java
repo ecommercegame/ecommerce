@@ -1,29 +1,21 @@
 package com.ecommerce.ecommerce.model;
 
-import java.util.List;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name="produtos")
 public class Produtos {
-	
-	public Produtos () {
-		super ();
-	}
+
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,8 +49,30 @@ public class Produtos {
 	private String imagem;
 	
 	@ManyToOne
-	@JoinColumn(name = "id_pedidos")
-	private List<Pedidos> pedidos;
+	@JsonIgnore
+	private Pedidos pedidos;
+
+	
+	public Produtos () {
+		super ();
+	}
+	
+	
+
+	public Produtos(Long idProduto, String nomeProduto, String descricaoProduto, double valorProduto, int estoque,
+			String categorias, String imagem, Pedidos pedidos) {
+		this.idProduto = idProduto;
+		this.nomeProduto = nomeProduto;
+		this.descricaoProduto = descricaoProduto;
+		this.valorProduto = valorProduto;
+		this.estoque = estoque;
+		this.categorias = categorias;
+		this.imagem = imagem;
+		this.pedidos = pedidos;
+	}
+
+
+
 
 
 	public long getIdProduto() {
@@ -120,12 +134,12 @@ public class Produtos {
 	}
 
 
-	public List<Pedidos> getPedidos() {
+	public Pedidos getPedidos() {
 		return pedidos;
 	}
 
 
-	public void setPedidos(List<Pedidos> pedidos) {
+	public void setPedidos(Pedidos pedidos) {
 		this.pedidos = pedidos;
 	}
 
