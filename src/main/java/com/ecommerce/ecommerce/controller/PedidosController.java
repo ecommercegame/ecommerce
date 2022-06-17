@@ -37,11 +37,7 @@ public class PedidosController {
 				.map(resp -> ResponseEntity.ok(resp))
 				.orElse(ResponseEntity.notFound().build());
 	}
-	
-	@GetMapping("/confirmacaoEnvio/{envio}")
-	public ResponseEntity<List<Pedidos>>GetByNome(@PathVariable int envio){
-		return ResponseEntity.ok(pedidosRepository.findAllByConfirmacaoEnvio(envio));
-	}
+		
 	
 	@PostMapping
 	public ResponseEntity<Pedidos> post (@RequestBody Pedidos pedidos){
