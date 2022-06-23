@@ -1,16 +1,22 @@
 package com.ecommerce.ecommerce.model;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.ecommerce.ecommerce.util.Categorias;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name="produtos")
@@ -41,16 +47,14 @@ public class Produtos {
 	@Column(name="estoque")
 	private int estoque;
 	
-	@NotNull
-	@Column(name="categorias")
-	private String categorias;
+	private @Enumerated(EnumType.STRING) Categorias categorias;
 	
 	@NotNull
 	private String imagem;
 	
-	@ManyToOne
-	@JsonIgnore
-	private Pedidos pedidos;
+	@OneToMany(mappedBy="produtos", cascade=CascadeType.REMOVE)
+	@JsonIgnoreProperties("produtos")
+	private List<Pedidos> pedidos;
 
 	
 	public Produtos () {
@@ -59,7 +63,7 @@ public class Produtos {
 	
 	
 
-	public Produtos(Long idProduto, String nomeProduto, String descricaoProduto, double valorProduto, int estoque,
+	/*public Produtos(Long idProduto, String nomeProduto, String descricaoProduto, double valorProduto, int estoque,
 			String categorias, String imagem, Pedidos pedidos) {
 		this.idProduto = idProduto;
 		this.nomeProduto = nomeProduto;
@@ -69,13 +73,13 @@ public class Produtos {
 		this.categorias = categorias;
 		this.imagem = imagem;
 		this.pedidos = pedidos;
-	}
+	}*/
 
 
 
 
 
-	public long getIdProduto() {
+	public Long getIdProduto() {
 		return idProduto;
 	}
 
@@ -124,22 +128,22 @@ public class Produtos {
 	}
 
 
-	public String getCategorias() {
+	public Categorias getCategorias() {
 		return categorias;
 	}
 
 
-	public void setCategorias(String categorias) {
+	public void setCategorias(Categorias categorias) {
 		this.categorias = categorias;
 	}
 
 
-	public Pedidos getPedidos() {
+	public List<Pedidos> getPedidos() {
 		return pedidos;
 	}
 
 
-	public void setPedidos(Pedidos pedidos) {
+	public void setPedidos(List<Pedidos> pedidos) {
 		this.pedidos = pedidos;
 	}
 

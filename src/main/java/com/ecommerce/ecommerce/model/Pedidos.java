@@ -1,21 +1,13 @@
 package com.ecommerce.ecommerce.model;
 
-import java.util.List;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name= "pedidos")
@@ -29,21 +21,13 @@ public class Pedidos {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id_pedido")
 	private Long idPedido;
-			
-	@Column(name = "mais_vendidos")
-	private int maisVendidos;
 	
-	@NotNull
-	@Column(name = "valor_total")
-	private double valorTotal;
-		
 	@ManyToOne 
 	@JoinColumn(name= "usuarios_id")
 	private Usuarios usuarios;
 	
-	@OneToMany (mappedBy = "pedidos", fetch = FetchType.LAZY, cascade = CascadeType.ALL)	
-	@JsonIgnore
-	private List<Produtos> produtos;
+	@ManyToOne
+	private Produtos produtos;
 
 	public Long getIdPedido() {
 		return idPedido;
@@ -51,22 +35,6 @@ public class Pedidos {
 
 	public void setIdPedido(Long idPedido) {
 		this.idPedido = idPedido;
-	}
-
-	public int getMaisVendidos() {
-		return maisVendidos;
-	}
-
-	public void setMaisVendidos(int maisVendidos) {
-		this.maisVendidos = maisVendidos;
-	}
-
-	public double getValorTotal() {
-		return valorTotal;
-	}
-
-	public void setValorTotal(double valorTotal) {
-		this.valorTotal = valorTotal;
 	}
 
 	public Usuarios getUsuarios() {
@@ -77,11 +45,11 @@ public class Pedidos {
 		this.usuarios = usuarios;
 	}
 
-	public List<Produtos> getProdutos() {
+	public Produtos getProdutos() {
 		return produtos;
 	}
 
-	public void setProdutos(List<Produtos> produtos) {
+	public void setProdutos(Produtos produtos) {
 		this.produtos = produtos;
 	}
 	
