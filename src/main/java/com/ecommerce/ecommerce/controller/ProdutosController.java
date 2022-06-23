@@ -2,6 +2,8 @@ package com.ecommerce.ecommerce.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,14 +15,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ecommerce.ecommerce.model.Produtos;
 import com.ecommerce.ecommerce.repository.ProdutosRepository;
+import com.ecommerce.ecommerce.util.Categorias;
 
 @RestController
 @RequestMapping("/produtos")
-@CrossOrigin("*")
+@CrossOrigin(origins = "*",allowedHeaders = "*")
 
 public class ProdutosController {
 	
@@ -48,18 +52,18 @@ public class ProdutosController {
 	}
 	
 	@GetMapping("/categorias/{categorias}")
-	public ResponseEntity<List<Produtos>>GetByCategorias(@PathVariable String categorias){
+	public ResponseEntity<List<Produtos>>GetByCategorias(@RequestParam (defaultValue = "ACAO") Categorias categorias){
 		
-		return ResponseEntity.ok(produtosRepository.findAllByCategoriasContainingIgnoreCase(categorias));
+		return ResponseEntity.ok(produtosRepository.findAllByCategorias(categorias));
 	}
 	
-	@PostMapping
-	public ResponseEntity<Produtos> post (@RequestBody Produtos produtos){
+	@PostMapping("/cadastrar")
+	public ResponseEntity<Produtos> post (@Valid @RequestBody Produtos produtos){
 		
 		return ResponseEntity.status(HttpStatus.CREATED).body(produtosRepository.save(produtos));
 	}
 	
-	@PutMapping
+	@PutMapping("/atualizar")
 	public ResponseEntity<Produtos> put (@RequestBody Produtos produtos){
 		
 		return ResponseEntity.status(HttpStatus.OK).body(produtosRepository.save(produtos));
